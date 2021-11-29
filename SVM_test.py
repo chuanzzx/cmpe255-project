@@ -5,6 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from joblib import dump, load
 from sklearn.metrics import f1_score, precision_recall_fscore_support
+from sklearn.metrics import accuracy_score
 
 def parse_column_types(path):
     with open(path, "r", encoding="utf8") as label_file:
@@ -43,6 +44,10 @@ def read_data(path, column_values):
             # one data features
             X = []
             for i, x in enumerate(raw_X):
+                if i == 24:
+                    # skip weight instance
+                    continue
+
                 if column_values[i] == "continuous":
                     X.append(x)
                     continue
@@ -63,7 +68,7 @@ def read_data(path, column_values):
     
 def main():
     # prepare for categorical encoding
-    column_file = "./labels.data"
+    column_file = "./census/labels.data"
     column_values = parse_column_types(column_file)
 
     # parse testing data
@@ -81,10 +86,13 @@ def main():
     pred_y = clf.predict(test_X[:])
 
     # evaluate predicted results
+    print ("\nAccuracy")
+    print (accuracy_score(test_y, pred_y))
     print ("\nf1_score None/micro/macro")
     print (f1_score(test_y, pred_y, average=None))
     print (f1_score(test_y, pred_y, average="micro"))
     print (f1_score(test_y, pred_y, average="macro"))
+    print (f1_score(test_y, pred_y, average="weighted"))
     print ("\nprecision_recall_fscore_support None/macro/micro/weighted")
     print (precision_recall_fscore_support(test_y, pred_y)) # default=None
     print (precision_recall_fscore_support(test_y, pred_y, average='macro'))

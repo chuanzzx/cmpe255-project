@@ -30,10 +30,14 @@ def read_data(path, column_values):
     out_X = []
     out_y = []
 
+    # "GRINST" 22, "MARSUPWT" 25, 
+    # "MIGMTR1" 26, "MIGMTR3" 27, "MIGMTR4" 28, "MIGSUN" 30, 
+    # "PEFNTVTY" 33, "PEMNTVTY" 34, "PENATVTY" 35, "YEAR" 41
+    drop_cols = set([21, 24, 25, 26, 27, 29, 32, 33, 34, 40])
+
     with open(path, "r", encoding="utf8") as f:
         lines = f.readlines()
         
-        # for line in lines[:3]:
         for line in lines:
             raw_data = line.split(",")
             raw_X = [x.strip() for x in raw_data[:-1]]
@@ -42,6 +46,14 @@ def read_data(path, column_values):
             # one data features
             X = []
             for i, x in enumerate(raw_X):
+                # if i in drop_cols:
+                #     # not select this attribute
+                #     continue
+
+                if i == 24:
+                    # skip weight instance
+                    continue
+
                 if column_values[i] == "continuous":
                     X.append(x)
                     continue
@@ -70,7 +82,7 @@ def sample_balanced_data(X, y, total_num):
     
 def main():
     # prepare for categorical encoding
-    column_file = "./labels.data"
+    column_file = "./census/labels.data"
     column_values = parse_column_types(column_file)
 
     # parse training data
@@ -92,7 +104,7 @@ def main():
 
     # save the model
     print("Saving model...")
-    dump(clf, "./models/svm_model_c3.joblib") 
+    dump(clf, "./models/svm_model_c3_fs.joblib") 
 
     # predict
     print ("Predicting...")
@@ -103,6 +115,7 @@ def main():
     print (f1_score(test_y, pred_y, average=None))
     print (f1_score(test_y, pred_y, average="micro"))
     print (f1_score(test_y, pred_y, average="macro"))
+    print (f1_score(test_y, pred_y, average="weighted"))
     # print (precision_recall_fscore_support(test_y, pred_y))
 
 if __name__ == '__main__':
