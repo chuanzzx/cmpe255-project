@@ -9,3 +9,16 @@ with in this directory can access the following two files:
 
 ```
 
+### Required Python Packages
+```
+numpy
+matplotlib
+scipy
+pandas
+sklearn
+```
+
+## Usage
+```
+py DT.py
+```
