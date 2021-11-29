@@ -15,6 +15,11 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.feature_selection import RFE
 
+
+
+print('\n\n************ Data Parsing ************')
+
+
 train_filename = '../census/labels.data'
 
 with open(train_filename, 'r', encoding='utf8') as label_file:
