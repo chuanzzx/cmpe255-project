@@ -25,3 +25,6 @@ Run the following command in this directory
 ```
 python census_rf.py
 ```
+
+## Misc
+rf_sample_output.data contains the first 1000 predictions of the first 1000 instances of the census-income.test file.
