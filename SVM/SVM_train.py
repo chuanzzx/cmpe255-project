@@ -1,6 +1,4 @@
 import numpy as np
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from joblib import dump, load
 from sklearn.metrics import f1_score, precision_recall_fscore_support
@@ -82,16 +80,16 @@ def sample_balanced_data(X, y, total_num):
     
 def main():
     # prepare for categorical encoding
-    column_file = "./census/labels.data"
+    column_file = "../data/labels.data"
     column_values = parse_column_types(column_file)
 
     # parse training data
-    train_path = "./census-income.data"
+    train_path = "../data/census-income.data"
     train_X, train_y = read_data(train_path, column_values)
     print (train_X.shape, train_y.shape)
 
     # parse testing data
-    test_path = "./census-income.test"
+    test_path = "../data/census-income.test"
     test_X, test_y = read_data(test_path, column_values)
     print (test_X.shape, test_y.shape)
 
@@ -104,17 +102,18 @@ def main():
 
     # save the model
     print("Saving model...")
-    dump(clf, "./models/svm_model_c3_fs.joblib") 
+    dump(clf, "./models/test.joblib") 
 
     # predict
     print ("Predicting...")
     pred_y = clf.predict(test_X[:])
 
     # evaluate predicted results
-    print ("f1_score None/micro/macro")
-    print (f1_score(test_y, pred_y, average=None))
-    print (f1_score(test_y, pred_y, average="micro"))
-    print (f1_score(test_y, pred_y, average="macro"))
+    print ("\nf1_score weighted")
+    # print ("f1_score None/micro/macro")
+    # print (f1_score(test_y, pred_y, average=None))
+    # print (f1_score(test_y, pred_y, average="micro"))
+    # print (f1_score(test_y, pred_y, average="macro"))
     print (f1_score(test_y, pred_y, average="weighted"))
     # print (precision_recall_fscore_support(test_y, pred_y))
 

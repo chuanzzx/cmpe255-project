@@ -35,7 +35,6 @@ def read_data(path, column_values):
     with open(path, "r", encoding="utf8") as f:
         lines = f.readlines()
         
-        # for line in lines[:3]:
         for line in lines:
             raw_data = line.split(",")
             raw_X = [x.strip() for x in raw_data[:-1]]
@@ -68,11 +67,11 @@ def read_data(path, column_values):
     
 def main():
     # prepare for categorical encoding
-    column_file = "./census/labels.data"
+    column_file = "../data/labels.data"
     column_values = parse_column_types(column_file)
 
     # parse testing data
-    test_path = "./census-income.test"
+    test_path = "../data/census-income.test"
     test_X, test_y = read_data(test_path, column_values)
     print (test_X.shape, test_y.shape)
 
@@ -88,15 +87,19 @@ def main():
     # evaluate predicted results
     print ("\nAccuracy")
     print (accuracy_score(test_y, pred_y))
-    print ("\nf1_score None/micro/macro")
-    print (f1_score(test_y, pred_y, average=None))
-    print (f1_score(test_y, pred_y, average="micro"))
-    print (f1_score(test_y, pred_y, average="macro"))
+
+    print ("\nf1_score weighted")
+    # print ("\nf1_score None/micro/macro")
+    # print (f1_score(test_y, pred_y, average=None))
+    # print (f1_score(test_y, pred_y, average="micro"))
+    # print (f1_score(test_y, pred_y, average="macro"))
     print (f1_score(test_y, pred_y, average="weighted"))
-    print ("\nprecision_recall_fscore_support None/macro/micro/weighted")
-    print (precision_recall_fscore_support(test_y, pred_y)) # default=None
-    print (precision_recall_fscore_support(test_y, pred_y, average='macro'))
-    print (precision_recall_fscore_support(test_y, pred_y, average='micro'))
+
+    print ("\nprecision_recall_fscore_support weighted")
+    # print ("\nprecision_recall_fscore_support None/macro/micro/weighted")
+    # print (precision_recall_fscore_support(test_y, pred_y)) # default=None
+    # print (precision_recall_fscore_support(test_y, pred_y, average='macro'))
+    # print (precision_recall_fscore_support(test_y, pred_y, average='micro'))
     print (precision_recall_fscore_support(test_y, pred_y, average='weighted'))
 
 if __name__ == '__main__':
