@@ -20,7 +20,7 @@ from sklearn.feature_selection import RFE
 print('\n\n************ Data Parsing ************')
 
 
-train_filename = '../census/labels.data'
+train_filename = '../data/labels.data'
 
 with open(train_filename, 'r', encoding='utf8') as label_file:
     print('Reading label file...')
@@ -78,8 +78,8 @@ def parse_data_lines(data_line, data_labels, data_weight, data_matrix):
                     line.append(v)
     data_matrix.append(line)
 
-data_filename = '../census/census-income.data'
-test_filename= '../census/census-income.test'
+data_filename = '../data/census-income.data'
+test_filename= '../data/census-income.test'
 
 with open(data_filename, 'r', encoding='utf8') as data_file:
     print('Reading train data...')
@@ -229,45 +229,55 @@ def plot_measures(x_axis, measures, x_label, runtime=True):
         plt.show()
 
 
-print('\n\n************ Training and Prediction ************')
-print('Running Decision Tree with min_impurity_decrease from 1*10^-6 to 5*10^-5')
+# print('\n\n************ Training and Prediction ************')
+# print('Running Decision Tree with min_impurity_decrease from 1*10^-6 to 5*10^-5')
 
-x = [i/(10**6) for i in range(50, 0, -1)]
-dt_impurity_instance_train = []
-dt_impurity_instance_test = []
-dt_impurity_instance_depths = []
-for depth in x:
-    a,b,c = run_dt_with_params(
-        train_weights=data_weight,
-        min_impurity_decrease=depth, 
-        average='weighted')
-    dt_impurity_instance_train.append(a)
-    dt_impurity_instance_test.append(b)
-    dt_impurity_instance_depths.append(c)
+# x = [i/(10**6) for i in range(50, 0, -1)]
+# dt_impurity_instance_train = []
+# dt_impurity_instance_test = []
+# dt_impurity_instance_depths = []
+# for depth in x:
+#     a,b,c = run_dt_with_params(
+#         train_weights=data_weight,
+#         min_impurity_decrease=depth, 
+#         average='weighted')
+#     dt_impurity_instance_train.append(a)
+#     dt_impurity_instance_test.append(b)
+#     dt_impurity_instance_depths.append(c)
 
-dt_impurity_instance_train = np.array(dt_impurity_instance_train)
-dt_impurity_instance_test = np.array(dt_impurity_instance_test)
-dt_impurity_instance_depths = np.array(dt_impurity_instance_depths)
+# dt_impurity_instance_train = np.array(dt_impurity_instance_train)
+# dt_impurity_instance_test = np.array(dt_impurity_instance_test)
+# dt_impurity_instance_depths = np.array(dt_impurity_instance_depths)
 
-plot_measures(x, dt_impurity_instance_train, 'Min Impurity Decrease (Train)')
-plot_measures(x, dt_impurity_instance_test, 'Min Impurity Decrease (Test)', runtime=False)
-
-
-plt.plot(x, dt_impurity_instance_depths, label=['Max depth'])
-plt.ylabel('Max Depth')
-plt.xlabel('Min Impurity Decrease')
-plt.title('Max Depth vs Min Impurity Decrease')
-plt.show()
+# plot_measures(x, dt_impurity_instance_train, 'Min Impurity Decrease (Train)')
+# plot_measures(x, dt_impurity_instance_test, 'Min Impurity Decrease (Test)', runtime=False)
 
 
-max_fscore_index = np.argmax(dt_impurity_instance_test[:,3])
-best_measure = dt_impurity_instance_test[max_fscore_index]
-print("Result from the best f-score")
-print("Minimum impurity decrease: ", x[max_fscore_index])
-print("Measures (accuracy, precision, recall, f-score): (%f, %f, %f, %f)" % (best_measure[0], best_measure[1], best_measure[2], best_measure[3]))
-print('Maximum depth: ', dt_impurity_instance_depths[max_fscore_index])
-np.sum(dt_impurity_instance_test[:, 4])
+# plt.plot(x, dt_impurity_instance_depths, label=['Max depth'])
+# plt.ylabel('Max Depth')
+# plt.xlabel('Min Impurity Decrease')
+# plt.title('Max Depth vs Min Impurity Decrease')
+# plt.show()
 
+
+# max_fscore_index = np.argmax(dt_impurity_instance_test[:,3])
+# best_measure = dt_impurity_instance_test[max_fscore_index]
+# print("Result from the best f-score")
+# print("Minimum impurity decrease: ", x[max_fscore_index])
+# print("Measures (accuracy, precision, recall, f-score): (%f, %f, %f, %f)" % (best_measure[0], best_measure[1], best_measure[2], best_measure[3]))
+# print('Maximum depth: ', dt_impurity_instance_depths[max_fscore_index])
+# np.sum(dt_impurity_instance_test[:, 4])
+
+
+print('\n\n************ Writing Sample Output ************')
+dt = DecisionTreeClassifier(min_impurity_decrease=2.1e-05)#x[max_fscore_index])
+dt.fit(sparse_data_matrix, data_labels)
+sample_results = dt.predict(sparse_test_matrix[:1000])
+print("Measures for sample: ", precision_recall_fscore_support(test_labels[:1000], sample_results, average='weighted'))
+
+with open('dt_sample_output.data', 'w', encoding='utf8') as output_file:
+    for result in sample_results:
+        output_file.write(str(result) + '\n')
 
 
 
