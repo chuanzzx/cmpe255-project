@@ -1,7 +1,5 @@
 import sys
 import numpy as np
-import pandas as pd
-from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
 from joblib import dump, load
 from sklearn.metrics import f1_score, precision_recall_fscore_support
@@ -101,6 +99,11 @@ def main():
     # print (precision_recall_fscore_support(test_y, pred_y, average='macro'))
     # print (precision_recall_fscore_support(test_y, pred_y, average='micro'))
     print (precision_recall_fscore_support(test_y, pred_y, average='weighted'))
+
+    # build sample output
+    with open("./svm_sample_output.data", "w") as f:
+        for x in pred_y[:1000]:
+            f.write(str(x))
 
 if __name__ == '__main__':
     main()
