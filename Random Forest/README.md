@@ -1,7 +1,7 @@
-# Decision Trees prediction
+# Random Forest prediction
 
 ## Prerequisites
-Need to include the original dataset at the parent folder so that running the `DT.py`
+Need to include the original dataset at the parent folder so that running the `census_rf.py`
 with in this directory can access the following two files: 
 ```
 ../data/census-income.data
@@ -10,16 +10,18 @@ with in this directory can access the following two files:
 ```
 
 ### Required Python Packages
+These packages can all be installed using Anaconda.
 ```
 numpy
 matplotlib
 scipy
 pandas
 sklearn
+imblearn
 ```
 
 ## Usage
 Run the following command in this directory
 ```
-py DT.py
+python census_rf.py
 ```
