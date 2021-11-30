@@ -19,6 +19,7 @@ sklearn
 ```
 
 ## Usage
+Run the following command in this directory
 ```
 py DT.py
 ```
