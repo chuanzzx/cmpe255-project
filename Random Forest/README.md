@@ -4,8 +4,8 @@
 Need to include the original dataset at the parent folder so that running the `census_rf.py`
 with in this directory can access the following two files: 
 ```
-../data/census-income.data
-../data/census-income.test
+../census/census-income.data
+../census/census-income.test
 
 ```
 
