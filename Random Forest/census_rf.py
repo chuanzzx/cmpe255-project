@@ -1,3 +1,11 @@
+# census_rf.py
+
+'''
+11.29.2021
+
+Trains a Random Forest classifier to classify a person's income level. Uses the UCI Census-Income dataset.
+'''
+
 import pandas as pd
 import numpy as np
 
@@ -15,6 +23,7 @@ INSTANCE_NUM = 24764
 
 # Loading in the census training data
 census_df = pd.read_csv("census/census-income.data", header=None)
+census_df = census_df.drop([24], axis=1)
 
 # Imputing missing values ("?") using most frequent policy
 imp_census_df = census_df
@@ -41,7 +50,7 @@ ohe.fit(cat_feat_df.drop(["labels"], axis=1))
 codes = ohe.transform(cat_feat_df.drop(["labels"], axis=1))
 one_hot_df = pd.concat([imp_census_df.select_dtypes(exclude="object"),
                         pd.DataFrame(codes, columns=ohe.get_feature_names()).astype(int)], axis=1)
-one_hot_df["labels"] = census_df["labels"]
+one_hot_df["labels"] = imp_census_df["labels"]
 
 # splitting data based on label
 under_df = one_hot_df.loc[one_hot_df.labels == " - 50000."]
@@ -106,14 +115,12 @@ rf = RandomForestClassifier()
 n_estimators = [100, 300]
 max_depth = [None]
 min_samples_split = [2, 5]
-min_samples_leaf = [1, 5]
 
 # parameter grid
 param_grid = {
     "n_estimators": n_estimators,
     "max_depth": max_depth,
-    "min_samples_split": min_samples_split,
-    "min_samples_leaf": min_samples_leaf
+    "min_samples_split": min_samples_split
 }
 
 rf_grid_clf = GridSearchCV(estimator=rf, param_grid=param_grid, cv=3, verbose=2, n_jobs=-1)
@@ -122,8 +129,7 @@ rf_grid_clf.fit(X_train, y_train)
 The best params after grid search:
 
 {
-    'max_depth': None,
-    'min_samples_leaf': 1,
+    'max_depth': None
     'min_samples_split': 5,
     'n_estimators': 300
 }
@@ -138,6 +144,7 @@ final_clf.fit(X, y)
 
 # loading test set
 census_test_df = pd.read_csv("census/census-income.test", header=None)
+census_test_df = census_test_df.drop([24], axis=1)
 
 # preprocessing on test data
 imp_test_df = census_test_df
@@ -171,3 +178,11 @@ testing_df["labels"] = np.asarray(test_df["labels"])
 predictions = final_clf.predict(testing_df.drop(["labels"], axis=1))
 print(classification_report(testing_df["labels"], predictions))
 print("Accuracy of model: " + str(accuracy_score(testing_df["labels"], predictions)))
+
+# saving first 1000 predictions into a sample output file
+out_file = open("rf_sample_output.data", "w")
+
+for i in range(1000):
+    out_file.write(str(predictions[i]) + "\n")
+
+out_file.close()
